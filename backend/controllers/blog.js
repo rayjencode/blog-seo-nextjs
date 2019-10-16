@@ -290,3 +290,18 @@ exports.update = (req, res) => {
     });
   });
 };
+
+// Get Photo by slug
+exports.photo = async (req, res) => {
+  try {
+    const slug = req.params.slug.toLowerCase();
+    let blog = await Blog.findOne({ slug }).select("photo");
+
+    if (!blog) return res.status(404).json({ message: "Blog doesnt exist" });
+
+    res.set("Content-Type", blog.photo.contentType);
+    res.send(blog.photo.data);
+  } catch (err) {
+    return res.status(500).send("Server Error");
+  }
+};

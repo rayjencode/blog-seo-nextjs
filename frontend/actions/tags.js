@@ -10,7 +10,7 @@ export const create = (tags, token) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify(tag)
+    body: JSON.stringify(tags)
   })
     .then(response => {
       return response.json();
