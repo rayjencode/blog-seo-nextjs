@@ -4,6 +4,7 @@ import Router from "next/router";
 import NProgress from "nprogress";
 import { APP_NAME } from "../config";
 import { signout, isAuth } from "../actions/auth";
+import Search from "./blog/Search";
 
 import {
   Collapse,
@@ -30,7 +31,7 @@ const Header = () => {
     setIsOpen(!isOpen);
   };
   return (
-    <div>
+    <React.Fragment>
       <Navbar color="light" light expand="md">
         <Link href="/">
           <NavbarBrand
@@ -43,19 +44,11 @@ const Header = () => {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
-            <React.Fragment>
-              <NavItem>
-                <Link href="/blogs">
-                  <NavLink style={{ cursor: "pointer" }}>Blogs</NavLink>
-                </Link>
-              </NavItem>
-            </React.Fragment>
-
             {!isAuth() && (
               <React.Fragment>
                 <NavItem>
-                  <Link href="/">
-                    <NavLink style={{ cursor: "pointer" }}>Home</NavLink>
+                  <Link href="/blogs">
+                    <NavLink style={{ cursor: "pointer" }}>Blogs</NavLink>
                   </Link>
                 </NavItem>
                 <NavItem>
@@ -72,22 +65,41 @@ const Header = () => {
             )}
 
             {isAuth() && isAuth().role === 0 && (
-              <NavItem>
-                <Link href="/user">
-                  <NavLink style={{ cursor: "pointer" }}>
-                    {`${isAuth().name}'s Dashboard`}
-                  </NavLink>
-                </Link>
-              </NavItem>
+              <React.Fragment>
+                <NavItem>
+                  <Link href="/blogs">
+                    <NavLink href="" style={{ cursor: "pointer" }}>
+                      Blogs
+                    </NavLink>
+                  </Link>
+                </NavItem>
+                <NavItem>
+                  <Link href="/user">
+                    <NavLink style={{ cursor: "pointer" }}>
+                      {`${isAuth().name}'s Dashboard`}
+                    </NavLink>
+                  </Link>
+                </NavItem>
+              </React.Fragment>
             )}
             {isAuth() && isAuth().role === 1 && (
-              <NavItem>
-                <Link href="/admin">
-                  <NavLink href="" style={{ cursor: "pointer" }}>
-                    {`${isAuth().name}'s Dashboard`}
-                  </NavLink>
-                </Link>
-              </NavItem>
+              <React.Fragment>
+                <NavItem>
+                  <Link href="/blogs">
+                    <NavLink href="" style={{ cursor: "pointer" }}>
+                      Blogs
+                    </NavLink>
+                  </Link>
+                </NavItem>
+
+                <NavItem>
+                  <Link href="/admin">
+                    <NavLink href="" style={{ cursor: "pointer" }}>
+                      {`${isAuth().name}'s Dashboard`}
+                    </NavLink>
+                  </Link>
+                </NavItem>
+              </React.Fragment>
             )}
             {isAuth() && (
               <NavItem>
@@ -102,7 +114,8 @@ const Header = () => {
           </Nav>
         </Collapse>
       </Navbar>
-    </div>
+      <Search />
+    </React.Fragment>
   );
 };
 

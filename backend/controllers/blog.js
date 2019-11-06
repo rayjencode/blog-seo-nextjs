@@ -229,6 +229,7 @@ exports.remove = async (req, res) => {
 //   }
 // };
 
+// Blog Update
 exports.update = (req, res) => {
   const slug = req.params.slug.toLowerCase();
 
@@ -257,7 +258,7 @@ exports.update = (req, res) => {
 
       if (body) {
         oldBlog.excerpt = smartTrim(body, 320, " ", " ...");
-        oldBlog.metaDesc = stripHtml(body.substring(0, 160));
+        oldBlog.desc = stripHtml(body.substring(0, 160));
       }
 
       if (categories) {
@@ -281,7 +282,7 @@ exports.update = (req, res) => {
       oldBlog.save((err, result) => {
         if (err) {
           return res.status(400).json({
-            error: `Server Error`
+            error: errorHandler(err)
           });
         }
         // result.photo = undefined;
@@ -301,6 +302,48 @@ exports.photo = async (req, res) => {
 
     res.set("Content-Type", blog.photo.contentType);
     res.send(blog.photo.data);
+  } catch (err) {
+    return res.status(500).send("Server Error");
+  }
+};
+
+exports.listRelated = async (req, res) => {
+  try {
+    let limit = req.body.limit ? parseInt(req.body.limit) : 3;
+    const { _id, categories } = req.body.blog;
+
+    let blogs = await Blog.find({
+      _id: { $ne: _id },
+      categories: { $in: categories }
+    })
+      .limit(limit)
+      .populate("postedBy", "_id name username profile")
+      .select("title slug excerpt postedBy createdAt updatedAt metaDesc");
+
+    if (!blogs) return res.status(404).json({ error: "Blogs not Found" });
+
+    res.json(blogs);
+  } catch (err) {
+    return res.status(500).send("Server Error");
+  }
+};
+
+// get a List Search
+exports.listSearch = async (req, res) => {
+  try {
+    console.log(req.query);
+    const { search } = req.query;
+
+    if (search) {
+      let blogs = await Blog.find({
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { body: { $regex: search, $options: "i" } }
+        ]
+      }).select("-photo -body");
+
+      res.json(blogs);
+    }
   } catch (err) {
     return res.status(500).send("Server Error");
   }

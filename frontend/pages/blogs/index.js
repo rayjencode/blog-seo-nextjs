@@ -7,8 +7,17 @@ import { listBlogsWithCategoriesAndTags } from "../../actions/blog";
 import CardBlog from "../../components/blog/CardBlog";
 import { API, DOMAIN, APP_NAME, FB_APP_ID } from "../../config";
 import renderHtml from "react-render-html";
+import moment from "moment";
 
-const Blogs = ({ blogs, categories, tags, size, router }) => {
+const Blogs = ({
+  blogs,
+  categories,
+  tags,
+  totalBlogs,
+  blogSkip,
+  blogsLimit,
+  router
+}) => {
   const head = () => (
     <Head>
       <title>Programming Blogs | {APP_NAME}</title>
@@ -44,6 +53,38 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
     </Head>
   );
 
+  const [limit, setLimit] = useState(blogsLimit);
+  const [skip, setSkip] = useState(0);
+  const [size, setSize] = useState(totalBlogs);
+  const [loadedBlogs, setLoadedBlogs] = useState([]);
+
+  const loadMore = () => {
+    let toSkip = skip + limit;
+    listBlogsWithCategoriesAndTags(toSkip, limit).then(data => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        setLoadedBlogs([...loadedBlogs, ...data.blogs]);
+        setSize(data.size);
+        setSkip(toSkip);
+      }
+    });
+  };
+
+  const loadMoreButton = () => {
+    return (
+      size > 0 &&
+      size >= limit && (
+        <button
+          className="btn btn-outline-secondary btn-block my-5"
+          onClick={loadMore}
+        >
+          Load More..
+        </button>
+      )
+    );
+  };
+
   const showAllBlogs = () => {
     return blogs.map((blog, index) => (
       <li key={index} className="lead mb-5">
@@ -51,6 +92,13 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
       </li>
     ));
   };
+
+  const showLoadedBlogs = () =>
+    loadedBlogs.map((blog, index) => (
+      <li key={index} className="lead mb-5">
+        <CardBlog blog={blog} />
+      </li>
+    ));
 
   const showCategories = () => {
     return categories.map((cat, index) => (
@@ -64,7 +112,7 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
       </li>
     ));
   };
-  const showRelatedBlogs = () => {
+  const showRecentBlogs = () => {
     return blogs.map((blog, index) => (
       <li key={index}>
         <hr />
@@ -73,16 +121,29 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
             style={{ cursor: "pointer" }}
             className="w-100 my-3"
             src={`${API}/blog/photo/${blog.slug}`}
-            alt=""
+            alt={blog.title}
           />
         </Link>
         <Link href={`/blogs/${blog.slug}`}>
-          <a>{blog.title}</a>
+          <a>
+            <h5>
+              {" "}
+              <strong>{blog.title}</strong>
+            </h5>
+          </a>
         </Link>
-        <p>{renderHtml(blog.excerpt)}</p>
+        <p>
+          <small className="text-danger">
+            Publish: {moment(blog.updatedAt).fromNow()} by{" "}
+            <Link href={`/profile/${blog.postedBy.username}`}>
+              <a>{blog.postedBy.username}></a>
+            </Link>
+          </small>
+        </p>
       </li>
     ));
   };
+
   return (
     <React.Fragment>
       {head()}
@@ -103,6 +164,10 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
             <div className="row">
               <div className="col md-8">
                 <ul className="list-unstyled">{showAllBlogs()}</ul>
+                <ul className="list-unstyled">{showLoadedBlogs()}</ul>
+                <div className="row">
+                  <div className="col-md-6 mx-auto">{loadMoreButton()}</div>
+                </div>
               </div>
               <div className="col-md-4">
                 <div className="input-group mb-3">
@@ -126,8 +191,8 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
                 <h5>CATEGORIES</h5>
                 <ul className="list-unstyled">{showCategories()}</ul>
                 <hr />
-                <h5>RRELATED BLOGS</h5>
-                <ul className="list-unstyled">{showRelatedBlogs()}</ul>
+                <h5>RECENT POSTS</h5>
+                <ul className="list-unstyled">{showRecentBlogs()}</ul>
               </div>
             </div>
           </div>
@@ -138,7 +203,9 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
 };
 
 Blogs.getInitialProps = () => {
-  return listBlogsWithCategoriesAndTags().then(data => {
+  let skip = 0;
+  let limit = 2;
+  return listBlogsWithCategoriesAndTags(skip, limit).then(data => {
     if (data.error) {
       console.log(data.error);
     } else {
@@ -146,7 +213,9 @@ Blogs.getInitialProps = () => {
         blogs: data.blogs,
         categories: data.categories,
         tags: data.tags,
-        size: data.size
+        totalBlogs: data.size,
+        blogsLimit: limit,
+        blogSkip: skip
       };
     }
   });

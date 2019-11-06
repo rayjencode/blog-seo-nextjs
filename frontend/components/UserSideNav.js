@@ -7,7 +7,7 @@ Router.onRouteChangeStart = url => NProgress.start();
 Router.onRouteChangeComplete = url => NProgress.done();
 Router.onRouteChangeError = url => NProgress.done();
 
-const SideNav = () => {
+const UserSideNav = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => {
@@ -15,30 +15,19 @@ const SideNav = () => {
   };
   return (
     <ul className="list-group">
-      <li className="list-group-item active">Admin Dashboard</li>
+      <li className="list-group-item active">User Dashboard</li>
       <li className="list-group-item">
-        <Link href="/admin/crud/blogs">
+        <Link href="/user/crud/blogs">
           <a>Posts</a>
         </Link>
       </li>
       <li className="list-group-item">
-        <Link href="/admin/crud/category-tag">
-          <a>Category </a>
+        <Link href="/user/update">
+          <a> Profile</a>
         </Link>
       </li>
       <li className="list-group-item">
-        <Link href="/admin/crud/category-tag">
-          <a>Tags </a>
-        </Link>
-      </li>
-
-      <li className="list-group-item">
-        <Link href="/admin/crud/profile">
-          <a>User Profile</a>
-        </Link>
-      </li>
-      <li className="list-group-item">
-        <Link href="/admin/crud/settings">
+        <Link href="/user/crud/settings">
           <a>Settings</a>
         </Link>
       </li>
@@ -46,4 +35,4 @@ const SideNav = () => {
   );
 };
 
-export default SideNav;
+export default UserSideNav;

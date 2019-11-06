@@ -8,8 +8,8 @@ import { getTags } from "../../actions/tags";
 import { createBlog } from "../../actions/blog";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-// import "../../node_modules/react-quill/dist/quill.snow.css";
 import { QuillModules, QuillFormats } from "../../helpers/quill";
+// import "../../node_modules/react-quill/dist/quill.snow.css";
 
 const BlogCreate = ({ router }) => {
   const blogFromLS = () => {
@@ -234,8 +234,6 @@ const BlogCreate = ({ router }) => {
             onChange={handleBody}
           />
         </div>
-        {showError()}
-        {showSuccess()}
       </form>
     );
   };
@@ -243,7 +241,11 @@ const BlogCreate = ({ router }) => {
   return (
     <div>
       <div className="row">
-        <div className="col-md-12 col-lg-9">{createBlogForm()}</div>
+        <div className="col-md-12 col-lg-9">
+          {showError()}
+          {showSuccess()}
+          {createBlogForm()}
+        </div>
         <div className="col-md-12 col-lg-3">
           <div className="card card-body">
             <img
@@ -265,13 +267,19 @@ const BlogCreate = ({ router }) => {
           </div>
           <div className="card card-body mt-3">
             <h5>Categories</h5>
-            <ul style={{ maxHeight: "200px", overflowY: "scroll" }}>
+            <ul
+              style={{ maxHeight: "200px", overflowY: "scroll" }}
+              className="px-0"
+            >
               {showCategories()}
             </ul>
           </div>
           <div className="card card-body mt-3">
             <h5>Tags</h5>
-            <ul style={{ maxHeight: "200px", overflowY: "scroll" }}>
+            <ul
+              style={{ maxHeight: "200px", overflowY: "scroll" }}
+              className="px-0"
+            >
               {showTags()}
             </ul>
           </div>

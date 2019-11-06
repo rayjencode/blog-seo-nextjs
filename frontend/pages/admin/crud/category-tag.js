@@ -3,7 +3,6 @@ import Dashboard from "../../../components/Dashboard";
 import Admin from "../../../components/auth/Admin";
 import Category from "../../../components/crud/Category";
 import Tags from "../../../components/crud/Tags";
-import Link from "next/link";
 
 const CategoryTag = () => {
   return (

@@ -23,8 +23,8 @@ const CardBlog = ({ blog }) => {
 
       <small>
         Published: {moment(blog.updatedAt).fromNow()} by{" "}
-        <Link href={`/${blog.postedBy.username}`}>
-          <a>{blog.postedBy.name}</a>
+        <Link href={`/profile/${blog.postedBy.username}`}>
+          <a>{blog.postedBy.username}</a>
         </Link>
       </small>
       <img
