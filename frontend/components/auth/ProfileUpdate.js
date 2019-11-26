@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Router from "next/router";
-import { getCookie, isAuth } from "../../actions/auth";
+import { getCookie, isAuth, updateUser } from "../../actions/auth";
 import { getProfile, update } from "../../actions/user";
+import { API } from "../../config";
 
 const ProfileUpdate = () => {
   const [values, setValues] = useState({
@@ -80,14 +81,16 @@ const ProfileUpdate = () => {
           loading: false
         });
       } else {
-        setValues({
-          ...values,
-          username: data.username,
-          name: data.name,
-          email: data.email,
-          about: data.about,
-          success: true,
-          loading: false
+        updateUser(data, () => {
+          setValues({
+            ...values,
+            username: data.username,
+            name: data.name,
+            email: data.email,
+            about: data.about,
+            success: true,
+            loading: false
+          });
         });
       }
     });
@@ -162,6 +165,39 @@ const ProfileUpdate = () => {
     </form>
   );
 
+  const showError = () => {
+    return (
+      <div
+        className="alert alert-danger"
+        style={{ display: error ? "" : "none" }}
+      >
+        All fields are required!
+      </div>
+    );
+  };
+
+  const showSuccess = () => {
+    return (
+      <div
+        className="alert alert-success"
+        style={{ display: success ? "" : "none" }}
+      >
+        Profile Updated!
+      </div>
+    );
+  };
+
+  const showLoading = () => {
+    return (
+      <div
+        className="alert alert-info"
+        style={{ display: loading ? "" : "none" }}
+      >
+        Loading...
+      </div>
+    );
+  };
+
   return (
     <React.Fragment>
       <div className="container">
@@ -171,13 +207,18 @@ const ProfileUpdate = () => {
               <div className="card-body">
                 <img
                   className="w-100"
-                  src="https://sc01.alicdn.com/kf/HTB1Yh0PQVXXXXb_XXXXq6xXFXXXU/Wholesale-new-sexy-ladies-colorful-sexy-model.jpg"
+                  src={`${API}/user/photo/${username}`}
                   alt="photo"
                 />
               </div>
             </div>
           </div>
-          <div className="col-md-8">{profileUpdateForm()}</div>
+          <div className="col-md-8">
+            {showSuccess()}
+            {showError()}
+            {showLoading()}
+            {profileUpdateForm()}
+          </div>
         </div>
       </div>
     </React.Fragment>

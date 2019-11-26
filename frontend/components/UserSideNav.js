@@ -21,6 +21,7 @@ const UserSideNav = () => {
           <a>Posts</a>
         </Link>
       </li>
+
       <li className="list-group-item">
         <Link href="/user/update">
           <a> Profile</a>

@@ -89,11 +89,12 @@ const BlogCreate = ({ router }) => {
           success: `A new blog title "${data.title}" is created`
         });
         setBody("");
-        // setCategories([]);
-        // setTags([]);
+        setCategories([]);
+        setTags([]);
       }
     });
   };
+
   const handleChange = name => e => {
     const value = name == "photo" ? e.target.files[0] : e.target.value;
     formData.set(name, value);

@@ -1,18 +1,18 @@
 import Layout from "../../../components/Layout";
-import Admin from "../../../components/auth/Admin";
+import Private from "../../../components/auth/Private";
 import BlogUpdate from "../../../components/crud/BlogUpdate";
-import Dashboard from "../../../components/Dashboard";
+import UserDashboard from "../../../components/UserDashboard";
 
-const Blog = () => {
+export const Blog = () => {
   return (
     <Layout>
-      <Dashboard>
-        <Admin>
+      <UserDashboard>
+        <Private>
           <div className="card card-body">
             <BlogUpdate />
           </div>
-        </Admin>
-      </Dashboard>
+        </Private>
+      </UserDashboard>
     </Layout>
   );
 };

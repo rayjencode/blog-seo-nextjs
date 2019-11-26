@@ -33,7 +33,7 @@ const SideNav = () => {
       </li>
 
       <li className="list-group-item">
-        <Link href="/admin/crud/profile">
+        <Link href="/user/update">
           <a>User Profile</a>
         </Link>
       </li>

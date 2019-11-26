@@ -11,3 +11,4 @@ export const DOMAIN = publicRuntimeConfig.PRODUCTION
   : publicRuntimeConfig.DOMAIN_DEVELOPMENT;
 
 export const FB_APP_ID = publicRuntimeConfig.FB_APP_ID;
+export const GOOGLE_CLIENT_ID = publicRuntimeConfig.GOOGLE_CLIENT_ID;

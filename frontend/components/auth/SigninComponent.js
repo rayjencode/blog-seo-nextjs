@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { signin, authenticate, isAuth } from "../../actions/auth";
 import Router from "next/router";
+import Link from "next/link";
+import LoginGoogle from "./LoginGoogle";
 
 const SigninComponent = () => {
   const [values, setValues] = useState({
@@ -83,7 +85,11 @@ const SigninComponent = () => {
             placeholder="Enter password"
           />
         </div>
-        <button className="btn btn-secondary">SignIn</button>
+
+        <button className="btn btn-secondary btn-block mb-3">SignIn</button>
+        <Link href="/auth/password/forgot">
+          <a>Forgot Password</a>
+        </Link>
       </form>
     );
   };
@@ -92,7 +98,11 @@ const SigninComponent = () => {
       {showError()}
       {showLoading()}
       {showMessage()}
+
       {showForm && signinForm()}
+      <br />
+      <LoginGoogle />
+      <br />
     </React.Fragment>
   );
 };

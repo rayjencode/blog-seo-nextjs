@@ -2,7 +2,6 @@ import Layout from "../../../components/Layout";
 import Admin from "../../../components/auth/Admin";
 import BlogRead from "../../../components/crud/BlogRead";
 import Dashboard from "../../../components/Dashboard";
-import Link from "next/link";
 
 const Blogs = () => {
   return (

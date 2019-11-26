@@ -12,6 +12,7 @@ const { errorHandler } = require("../helpers/dbErrorHandler");
 const Category = require("../models/category");
 const Blog = require("../models/blog");
 const Tag = require("../models/tag");
+const User = require("../models/user");
 
 exports.create = (req, res) => {
   let form = new formidable.IncomingForm();
@@ -344,6 +345,26 @@ exports.listSearch = async (req, res) => {
 
       res.json(blogs);
     }
+  } catch (err) {
+    return res.status(500).send("Server Error");
+  }
+};
+
+// Get a list of Blog by User
+exports.listByUser = async (req, res) => {
+  try {
+    let user = await User.findOne({ username: req.params.username });
+    if (!user) return res.status(400).json({ error: "Not Found User" });
+
+    let userId = user._id;
+
+    let blogs = await Blog.find({ postedBy: userId })
+      .populate("categories", "_id name slug")
+      .populate("tags", "_id name slug")
+      .populate("postedBy", "_id name username")
+      .select("_id title slug postedBy createdAt updatedAt");
+
+    res.json(blogs);
   } catch (err) {
     return res.status(500).send("Server Error");
   }

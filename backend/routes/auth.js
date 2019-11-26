@@ -4,25 +4,40 @@ const {
   signup,
   signin,
   signout,
-  requireSignin
+  requireSignin,
+  forgotPassword,
+  resetPassword,
+  preSignup,
+  googleLogin
 } = require("../controllers/auth");
 
 // Validators
 const { runValidation } = require("../validators");
 const {
   userSignupValidator,
-  userSigninValidator
+  userSigninValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator
 } = require("../validators/auth");
 
-router.post("/signup", userSignupValidator, runValidation, signup);
+router.post("/pre-signup", userSignupValidator, runValidation, preSignup);
+router.post("/signup", signup);
 router.post("/signin", userSigninValidator, runValidation, signin);
 router.get("/signout", signout);
+router.put(
+  "/forgot-password",
+  forgotPasswordValidator,
+  runValidation,
+  forgotPassword
+);
+router.put(
+  "/reset-password",
+  resetPasswordValidator,
+  runValidation,
+  resetPassword
+);
 
-// test
-// router.get("/secret", requireSignin, (req, res) => {
-//   res.json({
-//     user: req.user
-//   });
-// });
+// Google login
+router.post("/google-login", googleLogin);
 
 module.exports = router;

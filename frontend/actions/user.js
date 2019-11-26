@@ -1,5 +1,6 @@
 import fetch from "isomorphic-fetch";
 import { API } from "../config";
+import { handleResponse } from "./auth";
 
 export const userPublicProfile = async username => {
   try {
@@ -31,18 +32,35 @@ export const getProfile = async token => {
   }
 };
 
-export const update = async (token, user) => {
-  try {
-    const res = await fetch(`${API}/user/update`, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: user
-    });
-    return res.json();
-  } catch (err) {
-    console.log(err);
-  }
+// export const update = async (token, user) => {
+//   try {
+//     const res = await fetch(`${API}/user/update`, {
+//       method: "PUT",
+//       headers: {
+//         Accept: "application/json",
+//         Authorization: `Bearer ${token}`
+//       },
+//       body: user
+//     });
+//     handleResponse(response);
+//     return res.json();
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+export const update = (token, user) => {
+  return fetch(`${API}/user/update`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: user
+  })
+    .then(response => {
+      handleResponse(response);
+      return response.json();
+    })
+    .catch(err => console.log(err));
 };

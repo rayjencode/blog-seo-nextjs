@@ -51,6 +51,13 @@ const Header = () => {
                     <NavLink style={{ cursor: "pointer" }}>Blogs</NavLink>
                   </Link>
                 </NavItem>
+
+                <NavItem>
+                  <Link href="/contact">
+                    <NavLink style={{ cursor: "pointer" }}>Contact</NavLink>
+                  </Link>
+                </NavItem>
+
                 <NavItem>
                   <Link href="/signup">
                     <NavLink style={{ cursor: "pointer" }}>Signup</NavLink>
@@ -102,15 +109,28 @@ const Header = () => {
               </React.Fragment>
             )}
             {isAuth() && (
-              <NavItem>
+              <React.Fragment>
+                <NavItem>
+                  <NavLink
+                    style={{ cursor: "pointer" }}
+                    onClick={() => signout(() => Router.replace("/signin"))}
+                  >
+                    Signout
+                  </NavLink>
+                </NavItem>
+              </React.Fragment>
+            )}
+
+            <NavItem>
+              <Link href="/user/crud/blog">
                 <NavLink
                   style={{ cursor: "pointer" }}
-                  onClick={() => signout(() => Router.replace("/signin"))}
+                  className="btn btn-primary text-white"
                 >
-                  Signout
+                  Write Blog
                 </NavLink>
-              </NavItem>
-            )}
+              </Link>
+            </NavItem>
           </Nav>
         </Collapse>
       </Navbar>

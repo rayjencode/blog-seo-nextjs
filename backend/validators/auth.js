@@ -17,3 +17,17 @@ exports.userSigninValidator = [
   check("email", "Please enter a valid email address").isEmail(),
   check("password", "Password is not valid").isLength({ min: 6 })
 ];
+
+exports.forgotPasswordValidator = [
+  check("email", "Must be a valid Email address")
+    .not()
+    .isEmpty()
+    .isEmail()
+];
+
+exports.resetPasswordValidator = [
+  check("newPassword", "Password must be at least 6 characters long")
+    .not()
+    .isEmpty()
+    .isLength({ min: 6 })
+];

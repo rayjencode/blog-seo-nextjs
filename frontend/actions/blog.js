@@ -1,6 +1,7 @@
 import fetch from "isomorphic-fetch";
 import { API } from "../config";
 import queryString from "query-string";
+import { isAuth, handleResponse } from "./auth";
 
 // Create Blog
 // export const createBlog = (blog, token) => {
@@ -18,21 +19,52 @@ import queryString from "query-string";
 //     .catch(err => console.log(err));
 // };
 
-export const createBlog = async (blog, token) => {
-  try {
-    const res = await fetch(`${API}/blog`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: blog
-    });
+// export const createBlog = async (blog, token) => {
+//   try {
+//     let createBlogEndpoint;
 
-    return res.json();
-  } catch (err) {
-    console.log(err);
+//     if (isAuth() && isAuth().role === 1) {
+//       createBlogEndpoint = `${API}/blog`;
+//     } else if (isAuth() && isAuth().role === 0) {
+//       createBlogEndpoint = `${API}/user/blog`;
+//     }
+//     const res = await fetch(`${createBlogEndpoint}`, {
+//       method: "POST",
+//       headers: {
+//         Accept: "application/json",
+//         Authorization: `Bearer ${token}`
+//       },
+//       body: blog
+//     });
+//     handleResponse(response);
+//     return res.json();
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+export const createBlog = (blog, token) => {
+  let createBlogEndpoint;
+
+  if (isAuth() && isAuth().role === 1) {
+    createBlogEndpoint = `${API}/blog`;
+  } else if (isAuth() && isAuth().role === 0) {
+    createBlogEndpoint = `${API}/user/blog`;
   }
+
+  return fetch(`${createBlogEndpoint}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: blog
+  })
+    .then(response => {
+      handleResponse(response);
+      return response.json();
+    })
+    .catch(err => console.log(err));
 };
 
 // export const listBlogsWithCategoriesAndTags = () => {
@@ -99,9 +131,17 @@ export const listRelated = async blog => {
 };
 
 // get list all the blogs
-export const list = async () => {
+export const list = async username => {
   try {
-    const res = await fetch(`${API}/blogs`, {
+    let listBlogEntpoint;
+
+    if (username) {
+      listBlogEntpoint = `${API}/${username}/blogs`;
+    } else {
+      listBlogEntpoint = `${API}/blogs`;
+    }
+
+    const res = await fetch(`${listBlogEntpoint}`, {
       method: "GET"
     });
 
@@ -114,7 +154,14 @@ export const list = async () => {
 // Delete the Blog
 export const removeBlog = async (slug, token) => {
   try {
-    const res = await fetch(`${API}/blog/${slug}`, {
+    let deleteBlogEndpoint;
+    if (isAuth() && isAuth().role === 1) {
+      deleteBlogEndpoint = `${API}/blog/${slug}`;
+    } else if (isAuth() && isAuth().role === 0) {
+      deleteBlogEndpoint = `${API}/user/blog/${slug}`;
+    }
+
+    const res = await fetch(`${deleteBlogEndpoint}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -122,7 +169,7 @@ export const removeBlog = async (slug, token) => {
         Authorization: `Bearer ${token}`
       }
     });
-
+    handleResponse(response);
     return res.json();
   } catch (err) {
     console.log(err);
@@ -132,7 +179,15 @@ export const removeBlog = async (slug, token) => {
 // Update Blog
 export const updateBlog = async (blog, token, slug) => {
   try {
-    const res = await fetch(`${API}/blog/${slug}`, {
+    let updateBlogEndpoint;
+
+    if (isAuth() && isAuth().role === 1) {
+      updateBlogEndpoint = `${API}/blog/${slug}`;
+    } else if (isAuth() && isAuth().role === 0) {
+      updateBlogEndpoint = `${API}/user/blog/${slug}`;
+    }
+
+    const res = await fetch(`${updateBlogEndpoint}`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -140,7 +195,7 @@ export const updateBlog = async (blog, token, slug) => {
       },
       body: blog
     });
-
+    handleResponse(response);
     return res.json();
   } catch (err) {
     console.log(err);
